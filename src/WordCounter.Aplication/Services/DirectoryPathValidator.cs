@@ -10,7 +10,8 @@ namespace WordCounter.Application.Services
     {
         public DirectoryPathValidator()
         {
-            RuleFor(directoryPath => directoryPath).NotEmpty().WithMessage("Directory path must not be empty.")
+            RuleFor(directoryPath => directoryPath).NotEmpty()
+               .WithMessage("Directory path must not be empty.")
                .Custom((directoryPath, context) =>
                {
                    try
