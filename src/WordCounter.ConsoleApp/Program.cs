@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-using WordCounter.Application.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.ComponentModel.DataAnnotations;
+using WordCounter.Application.Interface;
 using WordCounter.UI.ConsoleUI;
-
 
 namespace WordCounter.ConsoleApp
 {
@@ -12,35 +12,23 @@ namespace WordCounter.ConsoleApp
         {
             try
             {
-                var wordCounter = new WordsCounter();
-                var textAnalysisService = new TextAnalyzer(wordCounter);
-                var consoleUI = new ConsoleUI(textAnalysisService);
+                IServiceSetup serviceSetup = new ServiceSetup();
+                IServiceProvider serviceProvider = serviceSetup.SetupServices();
+ 
+                var textAnalyzer = serviceProvider.GetRequiredService<ITextAnalyzer>();
+
+                var consoleUI = new ConsoleUI(textAnalyzer);
 
                 consoleUI.Run();
             }
-            catch (ArgumentException ex)
+            catch (ValidationException ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
-
-            }
-
-            catch (DirectoryNotFoundException ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-
-            }
-            catch (InvalidOperationException ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An unexpected error occurred: " + ex.Message);
-
             }
-
-
         }
     }
 }

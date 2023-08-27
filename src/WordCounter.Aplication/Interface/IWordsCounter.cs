@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WordCounter.Application.Interface
 {
     public interface IWordsCounter
     {
-        Dictionary<string, int> CountWords(IEnumerable<string> lines);
+        Task<Dictionary<string, int>> CountWordsAsync(IEnumerable<string> lines);
     }
-
 }

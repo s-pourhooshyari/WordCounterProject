@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using WordCounter.Application.Interface;
-using WordCounter.Application.Services;
 
 namespace WordCounter.UI.ConsoleUI
 {
@@ -14,23 +15,37 @@ namespace WordCounter.UI.ConsoleUI
             _textAnalyzer = textAnalyzer;
         }
 
-        public void Run()
+        public async void Run()
         {
             Console.WriteLine("Welcome to the Word Counting Application!");
             Console.Write("Enter the directory path: ");
             string directoryPath = Console.ReadLine();
-
-            IWordsCounter wordCounter = new WordsCounter();
-            ITextAnalyzer textAnalyzer = new TextAnalyzer(wordCounter);
-
-            Dictionary<string, int> wordCounts = textAnalyzer.AnalyzeTextFilesInDirectory(directoryPath);
-
-            Console.WriteLine("Word Counts:");
-            foreach (var kvp in wordCounts)
+            try
             {
-                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-            }
+                IServiceSetup serviceSetup = new ServiceSetup();
+                IServiceProvider serviceProvider = serviceSetup.SetupServices();
 
+                var textAnalyzer = serviceProvider.GetRequiredService<ITextAnalyzer>();
+
+                Dictionary<string, int> wordCounts = await textAnalyzer.AnalyzeTextFilesInDirectoryAsync(directoryPath);
+                Console.WriteLine("Word Counts:");
+                foreach (var kvp in wordCounts)
+                {
+                    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+                }
+            }
+            catch (ValidationException ex)
+            {
+                Console.WriteLine("Validation errors occurred:");
+                foreach (var error in ex.Message)
+                {
+                    Console.WriteLine(error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+            }
         }
     }
 }

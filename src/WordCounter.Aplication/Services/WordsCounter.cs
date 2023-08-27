@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using WordCounter.Application.Interface;
 
 namespace WordCounter.Application.Services
@@ -9,7 +10,7 @@ namespace WordCounter.Application.Services
     {
         private readonly Regex _wordRegex = new Regex(@"\b\w+\b");
 
-        public Dictionary<string, int> CountWords(IEnumerable<string> lines)
+        public async Task<Dictionary<string, int>> CountWordsAsync(IEnumerable<string> lines)
         {
             var wordCount = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
@@ -28,6 +29,7 @@ namespace WordCounter.Application.Services
                         wordCount[word] = 1;
                     }
                 }
+                await Task.CompletedTask;
             }
             return wordCount;
         }
