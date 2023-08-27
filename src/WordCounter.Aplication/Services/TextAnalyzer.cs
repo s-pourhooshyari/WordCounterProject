@@ -41,6 +41,9 @@ namespace WordCounter.Application.Services
                     try
                     {
 
+
+
+
                         FileInfo fileInfo = new FileInfo(filePath);
                         if (fileInfo.Length <= 1024 * 1024) 
                         {
