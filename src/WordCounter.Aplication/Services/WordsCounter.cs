@@ -29,7 +29,6 @@ namespace WordCounter.Application.Services
                     }
                 }
             }
-
             return wordCount;
         }
     }

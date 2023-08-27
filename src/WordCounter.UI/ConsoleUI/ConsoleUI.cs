@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using WordCounter.Application.Interface;
 using WordCounter.Application.Services;
 

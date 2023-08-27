@@ -18,9 +18,7 @@ namespace WordCounter.Application.Services
         public Dictionary<string, int> AnalyzeTextFilesInDirectory(string directoryPath)
         {
             var wordCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            try
-            {
-
+            
                 if (string.IsNullOrWhiteSpace(directoryPath))
                 {
                     throw new ArgumentException("Directory path is empty or null.", nameof(directoryPath));
@@ -38,14 +36,13 @@ namespace WordCounter.Application.Services
                     throw new InvalidOperationException("No text files found in the directory.");
                 }
 
-              
-
                 foreach (string filePath in files)
                 {
                     try
                     {
+
                         FileInfo fileInfo = new FileInfo(filePath);
-                        if (fileInfo.Length <= 1024 * 1024) // Adjust the threshold as needed
+                        if (fileInfo.Length <= 1024 * 1024) 
                         {
                             List<string> lines = File.ReadLines(filePath).ToList();
                             var documentWordCounts = _wordCounter.CountWords(lines);
@@ -61,40 +58,10 @@ namespace WordCounter.Application.Services
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error processing file '{filePath}': {ex.Message}");
+                        throw new Exception($"Error processing file '{filePath}': {ex.Message}");
                     }
                 }
-                return wordCounts;
-
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-                Console.WriteLine("Press any key to exit...");
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-                Console.WriteLine("Press any key to exit...");
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
-            catch (InvalidOperationException ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-                Console.WriteLine("Press any key to exit...");
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An unexpected error occurred: " + ex.Message);
-                Console.WriteLine("Press any key to exit...");
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
+            
 
             return wordCounts;
         }
