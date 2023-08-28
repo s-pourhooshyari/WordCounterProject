@@ -1,54 +1,37 @@
 ﻿using FluentValidation;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WordCounter.Application.Interface;
- 
+
 namespace WordCounter.Application.Services
 {
-    public class TextAnalyzer : ITextAnalyzer
+    public class TextAnalyzer<Tin, Tout> : ITextAnalyzer<string, Dictionary<string, int>>
     {
         private readonly IWordsCounter _wordCounter;
         private readonly IFileReader _fileReader;
         private readonly IDirectoryPathValidator _directoryPathValidator;
-        private readonly IMergeService<string, int> _dictionaryMerger;
 
-        public TextAnalyzer(IWordsCounter wordCounter, IFileReader fileReader, IDirectoryPathValidator directoryPathValidator, IMergeService<string, int> dictionaryMerger)
+        public TextAnalyzer(IWordsCounter wordCounter, IFileReader fileReader, IDirectoryPathValidator directoryPathValidator)
         {
             _wordCounter = wordCounter;
             _fileReader = fileReader;
             _directoryPathValidator = directoryPathValidator;
-            _dictionaryMerger = dictionaryMerger;
         }
-        public async Task<Dictionary<string, int>> AnalyzeTextFilesInDirectoryAsync(string directoryPath)
+        public async Task<Dictionary<string, int>> Analyze(string directoryPath)
         {
             try
             {
                 _directoryPathValidator.ValidateAndThrow(directoryPath);
 
-            var files = Directory.GetFiles(directoryPath, "*.txt");
-            var tasks = files.Select(async filePath =>
-            {
-                try
+                List<string> lines = _fileReader.ReadFileLines(directoryPath);
+                Dictionary<string, int> documentWordCounts = new Dictionary<string, int>();
+                Task tasks = Task.Run(async () =>
                 {
-                    var fileInfo = new FileInfo(filePath);
-                    List<string> lines = _fileReader.ReadFileLines(filePath);
-
-                    var documentWordCounts = await _wordCounter.CountWordsAsync(lines);
-                    return documentWordCounts;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error processing file '{filePath}': {ex.Message}");
-                }
-            });
-
-            var wordCounts = (await Task.WhenAll(tasks))
-                .Aggregate(new Dictionary<string, int>(), (target, source) => _dictionaryMerger.MergeDictionaries(target, source));
-
-            return wordCounts;
+                    documentWordCounts = await _wordCounter.CountWordsAsync(lines);
+                });
+                tasks.Wait();
+                return documentWordCounts;
             }
             catch (ValidationException ex)
             {

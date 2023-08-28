@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace WordCounter.Application.Interface
 {
-    public interface ITextAnalyzer
+    public interface ITextAnalyzer<Tin, Tout>
     {
-        Task<Dictionary<string, int>> AnalyzeTextFilesInDirectoryAsync(string directoryPath);
+        Task<Tout> Analyze(Tin directoryPath);
     }
 }

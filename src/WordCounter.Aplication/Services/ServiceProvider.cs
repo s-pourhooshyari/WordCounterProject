@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using WordCounter.Application.Interface;
 using WordCounter.Application.Services;
 
@@ -11,8 +12,7 @@ public class ServiceSetup : IServiceSetup
             .AddSingleton<IWordsCounter, WordsCounter>()
             .AddSingleton<IFileReader, FileReader>()
             .AddSingleton<IDirectoryPathValidator, DirectoryPathValidator>()
-            .AddSingleton<IMergeService<string, int>, MergeService<string, int>>()
-            .AddSingleton<ITextAnalyzer, TextAnalyzer>()
+            .AddSingleton<ITextAnalyzer<string, Dictionary<string, int>>, TextAnalyzer<string, Dictionary<string, int>>>()
             .BuildServiceProvider();
 
         return serviceProvider;

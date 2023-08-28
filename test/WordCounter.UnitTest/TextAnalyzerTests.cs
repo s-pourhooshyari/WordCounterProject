@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -22,14 +23,13 @@ namespace WordCounter.Tests
 
             var directoryPathValidator = serviceProvider.GetRequiredService<IDirectoryPathValidator>();
 
-            var textAnalyzer = new TextAnalyzer(
+            var textAnalyzer = new TextAnalyzer<string, Dictionary<string, int>>(
                 Mock.Of<IWordsCounter>(),
                 Mock.Of<IFileReader>(),
-                directoryPathValidator,
-                Mock.Of<IMergeService<string, int>>()
+                directoryPathValidator                 
             );
 
-            await Assert.ThrowsAsync<ValidationException>(async () => await textAnalyzer.AnalyzeTextFilesInDirectoryAsync(directoryPath));
+            await Assert.ThrowsAsync<ValidationException>(async () => await textAnalyzer.Analyze(directoryPath));
         }
     }
 }

@@ -8,9 +8,9 @@ namespace WordCounter.UI.ConsoleUI
 {
     public class ConsoleUI
     {
-        private readonly ITextAnalyzer _textAnalyzer;
+        private readonly ITextAnalyzer<string, Dictionary<string, int>> _textAnalyzer;
 
-        public ConsoleUI(ITextAnalyzer textAnalyzer)
+        public ConsoleUI(ITextAnalyzer<string, Dictionary<string, int>> textAnalyzer)
         {
             _textAnalyzer = textAnalyzer;
         }
@@ -25,9 +25,9 @@ namespace WordCounter.UI.ConsoleUI
                 IServiceSetup serviceSetup = new ServiceSetup();
                 IServiceProvider serviceProvider = serviceSetup.SetupServices();
 
-                var textAnalyzer = serviceProvider.GetRequiredService<ITextAnalyzer>();
+                var textAnalyzer = serviceProvider.GetRequiredService<ITextAnalyzer<string, Dictionary<string, int>>>();
 
-                Dictionary<string, int> wordCounts = await textAnalyzer.AnalyzeTextFilesInDirectoryAsync(directoryPath);
+                Dictionary<string, int> wordCounts = await textAnalyzer.Analyze(directoryPath);
                 Console.WriteLine("Word Counts:");
                 foreach (var kvp in wordCounts)
                 {

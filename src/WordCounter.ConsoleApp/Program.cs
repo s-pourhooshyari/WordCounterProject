@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WordCounter.Application.Interface;
 using WordCounter.UI.ConsoleUI;
@@ -15,7 +16,7 @@ namespace WordCounter.ConsoleApp
                 IServiceSetup serviceSetup = new ServiceSetup();
                 IServiceProvider serviceProvider = serviceSetup.SetupServices();
  
-                var textAnalyzer = serviceProvider.GetRequiredService<ITextAnalyzer>();
+                var textAnalyzer = serviceProvider.GetRequiredService<ITextAnalyzer<string, Dictionary<string, int>>>();
 
                 var consoleUI = new ConsoleUI(textAnalyzer);
 
