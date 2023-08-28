@@ -2,8 +2,8 @@
 
 namespace WordCounter.Application.Interface
 {
-    public interface IFileReader
+    public interface IReader
     {
-        List<string> ReadFileLines(string filePath);
+        List<string> ReadLines(string filePath);
     }
 }

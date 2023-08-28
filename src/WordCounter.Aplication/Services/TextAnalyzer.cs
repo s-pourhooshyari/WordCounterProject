@@ -6,25 +6,21 @@ using WordCounter.Application.Interface;
 
 namespace WordCounter.Application.Services
 {
-    public class TextAnalyzer<Tin, Tout> : ITextAnalyzer<string, Dictionary<string, int>>
+    public class TextAnalyzer  : ITextAnalyzer<string, Dictionary<string, int>>
     {
         private readonly IWordsCounter _wordCounter;
-        private readonly IFileReader _fileReader;
-        private readonly IDirectoryPathValidator _directoryPathValidator;
+        private readonly IReader _reader;
 
-        public TextAnalyzer(IWordsCounter wordCounter, IFileReader fileReader, IDirectoryPathValidator directoryPathValidator)
+        public TextAnalyzer(IWordsCounter wordCounter, IReader reader)
         {
             _wordCounter = wordCounter;
-            _fileReader = fileReader;
-            _directoryPathValidator = directoryPathValidator;
+            _reader = reader;
         }
         public async Task<Dictionary<string, int>> Analyze(string directoryPath)
         {
             try
             {
-                _directoryPathValidator.ValidateAndThrow(directoryPath);
-
-                List<string> lines = _fileReader.ReadFileLines(directoryPath);
+                List<string> lines = _reader.ReadLines(directoryPath);
                 Dictionary<string, int> documentWordCounts = new Dictionary<string, int>();
                 Task tasks = Task.Run(async () =>
                 {

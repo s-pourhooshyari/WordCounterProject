@@ -27,7 +27,7 @@ namespace WordCounter.UI.ConsoleUI
 
                 var textAnalyzer = serviceProvider.GetRequiredService<ITextAnalyzer<string, Dictionary<string, int>>>();
 
-                Dictionary<string, int> wordCounts = await textAnalyzer.Analyze(directoryPath);
+                var wordCounts = await textAnalyzer.Analyze(directoryPath);
                 Console.WriteLine("Word Counts:");
                 foreach (var kvp in wordCounts)
                 {

@@ -10,9 +10,9 @@ public class ServiceSetup : IServiceSetup
     {
         var serviceProvider = new ServiceCollection()
             .AddSingleton<IWordsCounter, WordsCounter>()
-            .AddSingleton<IFileReader, FileReader>()
+            .AddSingleton<IReader, Reader>()
             .AddSingleton<IDirectoryPathValidator, DirectoryPathValidator>()
-            .AddSingleton<ITextAnalyzer<string, Dictionary<string, int>>, TextAnalyzer<string, Dictionary<string, int>>>()
+            .AddSingleton<ITextAnalyzer<string, Dictionary<string, int>>, TextAnalyzer>()
             .BuildServiceProvider();
 
         return serviceProvider;
