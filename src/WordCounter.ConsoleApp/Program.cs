@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using WordCounter.Application.Interface;
 using WordCounter.UI.ConsoleUI;
 
@@ -15,12 +16,13 @@ namespace WordCounter.ConsoleApp
             {
                 IServiceSetup serviceSetup = new ServiceSetup();
                 IServiceProvider serviceProvider = serviceSetup.SetupServices();
- 
+
                 var textAnalyzer = serviceProvider.GetRequiredService<ITextAnalyzer<string, Dictionary<string, int>>>();
 
                 var consoleUI = new ConsoleUI(textAnalyzer);
 
                 consoleUI.Run();
+
             }
             catch (ValidationException ex)
             {
